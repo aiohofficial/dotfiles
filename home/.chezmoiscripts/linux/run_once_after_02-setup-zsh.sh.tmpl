@@ -3,5 +3,7 @@ set -eufo pipefail
 
 sudo apt-get update
 sudo apt-get install -y zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 sudo chsh -s "$(command -v zsh)" "$(whoami)"
+
+# Используем zplug (см. dot_zshrc) вместо Oh My Zsh - убираем, если ставили раньше.
+rm -rf ~/.oh-my-zsh

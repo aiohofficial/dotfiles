@@ -1,0 +1,29 @@
+export LANG=en_US.UTF-8
+
+export ZPLUG_HOME=~/.zplug
+if [[ ! -d $ZPLUG_HOME ]]; then
+    git clone https://github.com/zplug/zplug "$ZPLUG_HOME"
+fi
+source "$ZPLUG_HOME/init.zsh"
+
+# Theme
+zplug "romkatv/powerlevel10k", as:theme
+
+# oh-my-zsh library pieces only - not the full framework
+zplug "lib/completion",   from:oh-my-zsh
+zplug "lib/history",      from:oh-my-zsh
+zplug "lib/key-bindings", from:oh-my-zsh
+zplug "lib/termsupport",  from:oh-my-zsh
+zplug "plugins/git",      from:oh-my-zsh
+
+# Plugins
+zplug "zsh-users/zsh-autosuggestions"
+zplug "zdharma/fast-syntax-highlighting"
+zplug "zsh-users/zsh-completions"
+zplug "zsh-users/zsh-history-substring-search"
+zplug "MichaelAquilina/zsh-you-should-use"
+
+zplug check || zplug install
+zplug load
+
+alias c="clear"

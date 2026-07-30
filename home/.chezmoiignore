@@ -6,4 +6,5 @@ Brewfile
 {{ end -}}
 {{ if ne .chezmoi.os "linux" -}}
 .chezmoiscripts/linux/**
+.zshrc
 {{ end -}}

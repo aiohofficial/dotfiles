@@ -23,7 +23,14 @@
   - `run_once_before_00-update-system.sh.tmpl` - `apt update && apt upgrade` (только один раз)
   - `run_once_before_01-install-homebrew.sh.tmpl` - ставит сам Homebrew, если его нет
   - `run_onchange_after_01-install-packages.sh.tmpl` - `brew bundle` по `Brewfile`
-  - `run_once_after_02-setup-zsh.sh.tmpl` - zsh + Oh My Zsh + делает его шеллом по умолчанию
+  - `run_once_after_02-setup-zsh.sh.tmpl` - ставит zsh, делает его шеллом по умолчанию,
+    убирает Oh My Zsh если стоял раньше (используем zplug вместо него, см. `dot_zshrc`)
+- `home/dot_zshrc` - только на Linux (исключён из `.chezmoiignore` не-Linux). Минимальный,
+  собранный вручную набор: zplug как менеджер плагинов, тема powerlevel10k, несколько
+  библиотечных кусков oh-my-zsh (`from:oh-my-zsh`, без всего фреймворка) и точечные
+  плагины (autosuggestions, fast-syntax-highlighting, completions, history-substring-search,
+  you-should-use). Сознательно не чужой готовый `.zshrc` целиком - там было много
+  специфичного под другой дистрибутив/десктоп (ALT Linux, GUI-алиасы, чужой юзернейм).
 - `update-packages.ps1` / `update-brewfile.sh` (корень репозитория) - перегенерируют
   соответствующие файлы из текущего реального состояния машины. Экспорт (эта машина -> файл)
   и применение (файл -> любая машина через `chezmoi apply`) - два независимых по времени действия.
