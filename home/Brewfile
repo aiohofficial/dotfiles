@@ -1,6 +1,6 @@
 brew "opentofu"
 brew "terraform-docs"
-brew "terraform-linters/tap/tflint"
+cask "terraform-linters/tap/tflint"
 brew "trivy"
 brew "checkov"
 brew "pre-commit"
