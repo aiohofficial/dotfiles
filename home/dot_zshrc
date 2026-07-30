@@ -1,5 +1,12 @@
 export LANG=en_US.UTF-8
 
+# zsh does not read .bashrc/.profile - PATH additions from there don't
+# carry over, need to be set here explicitly too.
+export PATH="$HOME/bin:$PATH"
+if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
 export ZPLUG_HOME=~/.zplug
 if [[ ! -d $ZPLUG_HOME ]]; then
     git clone https://github.com/zplug/zplug "$ZPLUG_HOME"
