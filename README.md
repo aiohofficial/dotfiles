@@ -17,8 +17,11 @@
   не на Linux, чтобы один репозиторий корректно работал на обеих платформах.
 - `home/.chezmoiscripts/windows/` - run_onchange_-скрипты, ставящие пакеты через
   `choco install packages.config -y` и `pip install -r requirements.txt`.
-- `home/.chezmoiscripts/linux/` - три скрипта по порядку:
-  - `run_once_before_00-install-homebrew.sh.tmpl` - ставит сам Homebrew, если его нет
+- `home/.chezmoiscripts/linux/` - четыре скрипта. `before_`/`after_` - это реальные фазы
+  выполнения chezmoi (before - до применения файлов, after - после), а не просто текст;
+  сортировка по номеру идёт внутри каждой фазы отдельно:
+  - `run_once_before_00-update-system.sh.tmpl` - `apt update && apt upgrade` (только один раз)
+  - `run_once_before_01-install-homebrew.sh.tmpl` - ставит сам Homebrew, если его нет
   - `run_onchange_after_01-install-packages.sh.tmpl` - `brew bundle` по `Brewfile`
   - `run_once_after_02-setup-zsh.sh.tmpl` - zsh + Oh My Zsh + делает его шеллом по умолчанию
 - `update-packages.ps1` / `update-brewfile.sh` (корень репозитория) - перегенерируют
