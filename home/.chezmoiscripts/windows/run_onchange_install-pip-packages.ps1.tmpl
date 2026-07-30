@@ -1,0 +1,2 @@
+# requirements.txt hash: {{ include "requirements.txt" | sha256sum }}
+py -m pip install -r "{{ .chezmoi.sourceDir }}/requirements.txt"

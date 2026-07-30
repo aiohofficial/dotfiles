@@ -1,0 +1,8 @@
+packages.config
+requirements.txt
+{{ if ne .chezmoi.os "windows" -}}
+.chezmoiscripts/windows/**
+{{ end -}}
+{{ if ne .chezmoi.os "linux" -}}
+.chezmoiscripts/linux/**
+{{ end -}}

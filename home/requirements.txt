@@ -1,0 +1,4 @@
+﻿checkov==3.3.8
+pdfplumber==0.11.7
+pip==24.0
+pre_commit==4.6.1
