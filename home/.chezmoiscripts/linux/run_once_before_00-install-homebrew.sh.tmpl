@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -eufo pipefail
+
+if [ ! -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi

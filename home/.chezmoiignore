@@ -1,5 +1,6 @@
 packages.config
 requirements.txt
+Brewfile
 {{ if ne .chezmoi.os "windows" -}}
 .chezmoiscripts/windows/**
 {{ end -}}

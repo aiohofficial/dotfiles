@@ -1,54 +1,70 @@
 # dotfiles
 
-Личная конфигурация машины на Windows, управляется через [chezmoi](https://www.chezmoi.io/).
+Личная конфигурация машин (Windows + Linux/WSL), управляется через [chezmoi](https://www.chezmoi.io/).
+Репозиторий: https://github.com/aiohofficial/dotfiles
 
 ## Структура
 
 - `.chezmoiroot` - реальное состояние лежит в `home/`, а не в корне репозитория.
-  Всё снаружи `home/` (этот README, `update-packages.ps1`) chezmoi не трогает.
-- `home/packages.config` - нативный экспорт Chocolatey (`choco export`). Прямое
-  отражение того, что реально стоит на машине - не куратируется вручную.
-- `home/requirements.txt` - нативный формат pip (`pip list --not-required --format=freeze`),
-  та же логика: факт состояния, а не декларация.
-- `home/.chezmoiignore` - оба файла исключены из применения как обычные таргеты
-  (иначе chezmoi попытался бы создать их копии в домашней папке).
-- `home/.chezmoiscripts/windows/` - два run_onchange_-скрипта, ставящие пакеты
-  через `choco install packages.config -y` и `pip install -r requirements.txt`
-  соответственно. Каждый перезапускается сам, когда меняется его файл.
-- `update-packages.ps1` (корень репозитория) - перегенерирует оба файла из
-  текущего реального состояния. Экспорт (эта машина -> файл) и применение
-  (файл -> любая машина через `chezmoi apply`) - два независимых по времени действия.
-- `~/.config/chezmoi/chezmoi.toml` - **машинный** конфиг, не часть этого репозитория.
+  Всё снаружи `home/` (этот README, `update-packages.ps1`, `update-brewfile.sh`) chezmoi не трогает.
+- `home/packages.config` - нативный экспорт Chocolatey (`choco export`), Windows.
+- `home/requirements.txt` - нативный формат pip (`pip list --not-required --format=freeze`), Windows.
+- `home/Brewfile` - нативный формат Homebrew (`brew bundle dump`), Linux.
+  Все три - прямое отражение того, что реально стоит на машине, не куратируется вручную.
+- `home/.chezmoiignore` - все три файла выше исключены из применения как обычные таргеты
+  (иначе chezmoi попытался бы создать их копии в домашней папке). Там же условия по ОС:
+  `.chezmoiscripts/windows/**` игнорируется не на Windows, `.chezmoiscripts/linux/**` -
+  не на Linux, чтобы один репозиторий корректно работал на обеих платформах.
+- `home/.chezmoiscripts/windows/` - run_onchange_-скрипты, ставящие пакеты через
+  `choco install packages.config -y` и `pip install -r requirements.txt`.
+- `home/.chezmoiscripts/linux/` - три скрипта по порядку:
+  - `run_once_before_00-install-homebrew.sh.tmpl` - ставит сам Homebrew, если его нет
+  - `run_onchange_after_01-install-packages.sh.tmpl` - `brew bundle` по `Brewfile`
+  - `run_once_after_02-setup-zsh.sh.tmpl` - zsh + Oh My Zsh + делает его шеллом по умолчанию
+- `update-packages.ps1` / `update-brewfile.sh` (корень репозитория) - перегенерируют
+  соответствующие файлы из текущего реального состояния машины. Экспорт (эта машина -> файл)
+  и применение (файл -> любая машина через `chezmoi apply`) - два независимых по времени действия.
+- `~/.config/chezmoi/chezmoi.toml` - **машинный** конфиг для Windows, не часть этого репозитория.
   Разрешает chezmoi запускать свои .ps1-скрипты (без него `apply` падает с "файл не
   имеет цифровой подписи" - Windows по умолчанию блокирует неподписанные скрипты).
-  Нужно создавать заново на каждой новой машине, см. ниже.
+  Нужно создавать заново на каждой новой Windows-машине, см. ниже.
 
 ## Как этим пользоваться
 
 Поставил что-то новое и хочешь зафиксировать это в репозитории:
 
 ```powershell
+# Windows
 .\update-packages.ps1
 git add home/packages.config home/requirements.txt
 git commit -m "update packages"
 ```
 
-Ничего руками в этих файлах не редактируем - они всегда генерируются заново
-целиком (choco export и pip freeze сами понимают свой формат, custom-парсинг
-не нужен).
+```bash
+# Linux
+./update-brewfile.sh
+git add home/Brewfile
+git commit -m "update packages"
+```
+
+Ничего руками в этих файлах не редактируем - они всегда генерируются заново целиком
+(choco export, pip freeze, brew bundle dump сами понимают свой формат, custom-парсинг не нужен).
 
 ## Основные команды
 
-```powershell
+```bash
 chezmoi diff    # показать, что изменится, ничего не применяя
 chezmoi apply   # применить изменения по-настоящему
 ```
 
-**Важно:** `choco install` обычно требует прав администратора. Запускай
+**Важно (Windows):** `choco install` обычно требует прав администратора. Запускай
 `chezmoi apply` из PowerShell, открытого от имени администратора - иначе
 установка пакетов может не пройти или зависнуть на UAC-запросе.
 
-## Установка на новой машине
+**Важно (Linux):** установка zsh и смена шелла (`run_once_after_02-setup-zsh.sh.tmpl`)
+делаются через `sudo` - при первом `chezmoi apply` спросит пароль, это нормально.
+
+## Установка на новой машине (Windows)
 
 Все команды - в PowerShell от имени администратора.
 
@@ -83,7 +99,7 @@ $toml = @'
 4. Применить дотфайлы:
 
 ```powershell
-chezmoi init --apply <URL репозитория>
+chezmoi init --apply https://github.com/aiohofficial/dotfiles.git
 ```
 
 5. Доставить окружение для pre-commit/checkov (pip-инструменты из `requirements.txt`
@@ -100,5 +116,15 @@ if ($userPath -notlike "*$scriptsDir*") {
 [Environment]::SetEnvironmentVariable("PYTHONUTF8", "1", "User")
 ```
 
-(URL появится, когда репозиторий будет запушен в удалённый git; оба шага 3 и 5
-требуют нового окна терминала, чтобы изменения подхватились.)
+(Шаги 3 и 5 требуют нового окна терминала, чтобы изменения подхватились.)
+
+## Установка на новой машине (Linux/WSL)
+
+```bash
+sh -c "$(curl -fsLS get.chezmoi.io)"
+~/bin/chezmoi init --apply https://github.com/aiohofficial/dotfiles.git
+```
+
+Всё остальное (Homebrew, инструменты из `Brewfile`, zsh) ставится автоматически
+через `.chezmoiscripts/linux/` при первом `apply`. Попросит sudo-пароль один раз
+(для установки zsh и смены шелла).
