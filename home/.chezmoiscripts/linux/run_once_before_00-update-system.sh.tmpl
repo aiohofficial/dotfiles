@@ -3,3 +3,6 @@ set -eufo pipefail
 
 sudo apt-get update
 sudo apt-get upgrade -y
+# build-essential/bubblewrap - Homebrew's own recommended dependencies;
+# unzip - needed by brew cask installs (e.g. tflint).
+sudo apt-get install -y build-essential bubblewrap unzip
