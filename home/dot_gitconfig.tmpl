@@ -1,0 +1,12 @@
+[user]
+	email = aiohofficial@gmail.com
+	name = Zhukov Aleksandr
+{{- if eq .chezmoi.os "windows" }}
+[includeIf "gitdir:{{ .chezmoi.homeDir }}/Documents/projects/mts.ai/**"]
+	path = {{ .chezmoi.homeDir }}/Documents/projects/mts.ai/.gitconfig
+{{- else }}
+[includeIf "gitdir:{{ .chezmoi.homeDir }}/projects/mts.ai/**"]
+	path = {{ .chezmoi.homeDir }}/projects/mts.ai/.gitconfig
+{{- end }}
+[safe]
+	directory = {{ .chezmoi.homeDir }}/.local/share/chezmoi
