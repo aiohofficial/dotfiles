@@ -3,4 +3,6 @@ set -eufo pipefail
 
 # Brewfile hash: {{ include "Brewfile" | sha256sum }}
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+brew tap terraform-linters/tap
+brew trust --formula terraform-linters/tap/tflint
 brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile"
