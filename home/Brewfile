@@ -1,3 +1,4 @@
+brew "node"
 brew "opentofu"
 brew "terraform-docs"
 cask "terraform-linters/tap/tflint"
