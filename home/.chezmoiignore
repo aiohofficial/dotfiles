@@ -7,4 +7,5 @@ Brewfile
 {{ if ne .chezmoi.os "linux" -}}
 .chezmoiscripts/linux/**
 .zshrc
+.p10k.zsh
 {{ end -}}
